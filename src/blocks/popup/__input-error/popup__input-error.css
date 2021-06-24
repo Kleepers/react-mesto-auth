@@ -1,0 +1,45 @@
+.popup__input-error {
+    font-size: 12px;
+    line-height: 1.25;
+    font-style: normal;
+    font-weight: normal;
+    position: absolute;
+    top: 0;
+    left: 0;
+    color: #f00;
+    padding-left: 36px;
+    padding-right: 36px;
+}
+
+@media screen and (max-width: 768px) {
+    .popup__input-error {
+        padding-left: 22px;
+        padding-right: 22px;
+    }
+}
+
+.popup__input_value_name + .popup__input-error, .popup__input_value_place + .popup__input-error, .popup__input_value_avatar + .popup__input-error  {
+    top: 146px;
+}
+
+.popup__input_value_info + .popup__input-error, .popup__input_value_image + .popup__input-error {
+    top: 205px;
+}
+
+@media screen and (max-width: 768px) {
+    .popup__input_value_name + .popup__input-error, .popup__input_value_place + .popup__input-error  {
+        top: 151px;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .popup__input_value_info + .popup__input-error, .popup__input_value_image + .popup__input-error  {
+        top: 210px;
+    }
+}
+
+
+
+
+
+
