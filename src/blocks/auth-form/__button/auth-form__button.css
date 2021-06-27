@@ -1,0 +1,21 @@
+.auth-form__button {
+    margin-top: 210px;
+    width: 358px;
+    height: 50px;
+    background: white;
+
+    font-style: normal;
+    font-weight: normal;
+    font-size: 18px;
+    line-height: 22px;
+    text-align: center;
+    color: #000000;
+    border: none;
+
+}
+
+.auth-form__button:after , .auth-form__button:focus {
+    outline: none;
+    border: none;
+    overflow: hidden;
+}
