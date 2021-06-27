@@ -14,6 +14,7 @@ import Login from "./Login";
 import Register from "./Register";
 import ProtectedRoute from "./ProtectedRoute";
 import InfoTooltip from "./InfoTooltip";
+import {auth} from "../utils/Auth";
 
 function App(props) {
 
@@ -64,19 +65,8 @@ function App(props) {
     }
 
     function onRegister (authPass,authMail) {
-        return fetch('https://auth.nomoreparties.co/signup', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                password: authPass,
-                email: authMail
-            })
-        })
-            .then(res => res.json())
-            .then((res) => {
-                console.log(res);
+            auth.onRegister(authPass,authMail)
+                .then((res) => {
                 if(res.error) {
                     handleInfoTooltipOpen(true);
                 }
@@ -88,52 +78,15 @@ function App(props) {
             .catch(err => console.log(err))
     }
 
-    function onLogin (mail,pass) {
-        return fetch('https://auth.nomoreparties.co/signin', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                password: pass,
-                email: mail
-            })
-        })
-            .then((res => res.json()))
-            .then((data) => {
-                if (data.token) {
-                    localStorage.setItem('jwt',data.token);
-                    return data;
-                }
-                else {
-                    return
-                }
-            })
-            .catch(err => console.log(err))
-    }
-
     function handleLogout () {
         handleLogStatus(false);
         localStorage.removeItem('jwt');
     }
 
-    function checkToken(token) {
-        return fetch('https://auth.nomoreparties.co/users/me', {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-            },
-        })
-            .then(res => res.json())
-            .then(data => data)
-            .catch(err => console.log(err))
-    }
-
     function handleTokenCheck () {
         if (localStorage.getItem('jwt')) {
             let jwt = localStorage.getItem('jwt');
-            checkToken(jwt).then((res) => {
+            auth.checkToken(jwt).then((res) => {
                 if (res){
                     setHeaderEmail(res.data.email);
                     handleLogStatus(true);
@@ -216,7 +169,7 @@ function App(props) {
 
             <Switch>
                 <Route path='/sign-in'>
-                    <Login onAuthorization={handleLogStatus} onLogin={onLogin}/>
+                    <Login onAuthorization={handleLogStatus} onLogin={auth.onLogin}/>
                 </Route>
                 <Route path='/sign-up'>
                     <Register onRegister={onRegister}/>
