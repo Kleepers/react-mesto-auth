@@ -14,7 +14,7 @@ import Login from "./Login";
 import Register from "./Register";
 import ProtectedRoute from "./ProtectedRoute";
 import InfoTooltip from "./InfoTooltip";
-import {auth} from "../utils/Auth";
+import {auth} from "../utils/auth";
 
 function App(props) {
 
