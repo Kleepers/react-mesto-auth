@@ -14,26 +14,22 @@ function Login (props) {
         setPass(event.target.value);
     }
 
+    React.useEffect (() => {
+        setPass('')
+        setMail('')
+    },[props.cleaner])
+
 
     function handleSubmit (event) {
         event.preventDefault();
-            props.onLogin(mail,pass)
-                .then((data) => {
-                    if (data.token) {
-                        setPass('');
-                        setMail('');
-                        props.onAuthorization(true);
-                        props.history.push('/');
-                    }
-                })
-                .catch(err => console.log(err));
+        props.onLogin(pass,mail)
     }
 
     return (
         <form className='auth-form' onSubmit={handleSubmit}>
             <p className='auth-form__title'>Вход</p>
-            <input className='auth-form__input' type='email' placeholder='Email' onChange={handleEmailChange}/>
-            <input className='auth-form__input' type='password' placeholder='Пароль' onChange={handlePassChange}/>
+            <input className='auth-form__input' type='email' placeholder='Email' onChange={handleEmailChange} value={mail || ''}/>
+            <input className='auth-form__input' type='password' placeholder='Пароль' onChange={handlePassChange} value={pass || ''}/>
             <button className='auth-form__button' type='submit'>Войти</button>
         </form>
     )

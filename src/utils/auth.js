@@ -1,57 +1,61 @@
-import React from 'react'
 
 class Auth {
 
+    constructor({baseUrl,headers}) {
+        this._baseUrl = baseUrl;
+        this._headers = headers;
+    }
+
+    getResponse(res) {
+        if (res.ok) {
+            return res.json();
+        }
+        else{
+            Promise.reject(`Ошибка: ${res.status}`);
+        }
+    }
+
     onRegister(authPass, authMail) {
-        return fetch('https://auth.nomoreparties.co/signup', {
+        return fetch(`${this._baseUrl}/signup`, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
+            headers: this._headers,
             body: JSON.stringify({
                 password: authPass,
                 email: authMail
             })
         })
-            .then(res => res.json())
+            .then(this.getResponse)
     }
 
-    onLogin (mail,pass) {
-        return fetch('https://auth.nomoreparties.co/signin', {
+    onLogin (pass,mail) {
+        return fetch(`${this._baseUrl}/signin`, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
+            headers: this._headers,
             body: JSON.stringify({
                 password: pass,
                 email: mail
             })
         })
-            .then((res => res.json()))
-            .then((data) => {
-                if (data.token) {
-                    localStorage.setItem('jwt',data.token);
-                    return data;
-                }
-                else {
-                    return
-                }
-            })
-            .catch(err => console.log(err))
+            .then(this.getResponse)
     }
 
     checkToken(token) {
-        return fetch('https://auth.nomoreparties.co/users/me', {
+        return fetch(`${this._baseUrl}/users/me`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`
             },
         })
-            .then(res => res.json())
-            .then(data => data)
-            .catch(err => console.log(err))
+            .then(this.getResponse)
     }
 }
 
-export const auth = new Auth();
+const authConfig = {
+    baseUrl: 'https://auth.nomoreparties.co',
+    headers: {
+        'Content-Type': 'application/json'
+    }
+};
+
+export const auth = new Auth(authConfig);

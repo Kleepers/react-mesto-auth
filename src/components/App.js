@@ -1,3 +1,4 @@
+import {auth} from "../utils/auth";
 import Header from './Header'
 import Main from './Main'
 import Footer from "./Footer";
@@ -14,7 +15,6 @@ import Login from "./Login";
 import Register from "./Register";
 import ProtectedRoute from "./ProtectedRoute";
 import InfoTooltip from "./InfoTooltip";
-import {auth} from "../utils/auth";
 
 function App(props) {
 
@@ -67,12 +67,33 @@ function App(props) {
     function onRegister (authPass,authMail) {
             auth.onRegister(authPass,authMail)
                 .then((res) => {
-                if(res.error) {
+                    console.log(res);
+                if(typeof res === "undefined") {
                     handleInfoTooltipOpen(true);
                 }
-                else {
+                else  {
                     handleInfoTooltipOpen(false);
                     props.history.push('/sign-in')
+                }
+            })
+            .catch(err => console.log(err))
+    }
+
+    function onLogin (pass,mail) {
+        auth.onLogin(pass,mail)
+            .then((data) => {
+                if (data.token) {
+                    localStorage.setItem('jwt',data.token);
+                    return data;
+                }
+                else {
+                    return
+                }
+            })
+            .then((data) => {
+                if (data) {
+                    handleLogStatus(true);
+                    props.history.push('/');
                 }
             })
             .catch(err => console.log(err))
@@ -85,14 +106,16 @@ function App(props) {
 
     function handleTokenCheck () {
         if (localStorage.getItem('jwt')) {
-            let jwt = localStorage.getItem('jwt');
-            auth.checkToken(jwt).then((res) => {
+            const jwt = localStorage.getItem('jwt');
+            auth.checkToken(jwt).then(data => data)
+                .then((res) => {
                 if (res){
                     setHeaderEmail(res.data.email);
                     handleLogStatus(true);
                     props.history.push('/');
                 }
             })
+                .catch(err => console.log(err))
             return jwt;
         }
     }
@@ -169,7 +192,7 @@ function App(props) {
 
             <Switch>
                 <Route path='/sign-in'>
-                    <Login onAuthorization={handleLogStatus} onLogin={auth.onLogin}/>
+                    <Login onAuthorization={handleLogStatus} onLogin={onLogin} cleaner={headerEmail}/>
                 </Route>
                 <Route path='/sign-up'>
                     <Register onRegister={onRegister}/>
